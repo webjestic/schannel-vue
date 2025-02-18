@@ -1,6 +1,14 @@
 <template>
   <v-layout class="rounded rounded-md">
-    <v-app-bar title="Application bar" />
+    <v-app-bar title="Application bar">
+      <v-spacer />
+      <v-btn
+        icon
+        @click="toggleTheme"
+      >
+        <v-icon>{{ theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+      </v-btn>
+    </v-app-bar>
 
     <v-navigation-drawer>
       <v-list>
@@ -17,9 +25,22 @@
 </template>
 
 <script>
+import { useTheme } from 'vuetify'
+
 export default {
   name: 'AppLayout',
-  // ...existing logic...
+  setup() {
+    const theme = useTheme()
+
+    const toggleTheme = () => {
+      theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+    }
+
+    return {
+      theme,
+      toggleTheme
+    }
+  }
 }
 </script>
 

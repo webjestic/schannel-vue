@@ -21,14 +21,20 @@
       style="min-height: 300px;">
       Main Content
     </v-main>
+
+    <AppFooter />
   </v-layout>
 </template>
 
 <script>
 import { useTheme } from 'vuetify'
+import AppFooter from './AppFooter.vue'
 
 export default {
   name: 'AppLayout',
+  components: {
+    AppFooter
+  },
   setup() {
     const theme = useTheme()
 

@@ -1,5 +1,10 @@
 # schannel-vue
 
+## Run the App;
+```bash
+ NODE_OPTIONS='--no-warnings' npm run dev  
+ ```
+
 ## Tech Stack
 - Vue 3 (https://vuejs.org/guide/quick-start.html)
 - Vuetify 3 (https://vuetifyjs.com/en/getting-started/installation/)

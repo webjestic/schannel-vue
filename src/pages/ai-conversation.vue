@@ -1,17 +1,22 @@
 <template>
   <v-container 
     class="d-flex flex-column"
-    style="height: calc(100vh - 150px); position: relative;">
+    style="height: calc(100vh - 150px); position: relative;"
+  >
     <!-- Main Content Area (with right margin to accommodate panel) -->
     <div style="margin-right: 260px;">
       <!-- Icon Card -->
       <v-card class="mb-4 pa-4">
         <div class="d-flex align-center">
-          <div v-for="(circle, index) in circles" :key="index" class="me-3">
+          <div
+            v-for="(circle, index) in circles"
+            :key="index"
+            class="me-3"
+          >
             <v-menu
               :model-value="activeCircleMenu === index"
-              @update:modelValue="val => activeCircleMenu = val ? index : null"
               offset-y
+              @update:model-value="val => activeCircleMenu = val ? index : null"
             >
               <template #activator="{ props }">
                 <v-btn
@@ -23,9 +28,27 @@
                   @click.stop
                 >
                   <div class="d-flex align-center justify-center">
-                    <v-icon v-if="circle.star" small color="yellow">mdi-star</v-icon>
-                    <v-icon v-if="circle.thumbUp" small color="white">mdi-thumb-up</v-icon>
-                    <v-icon v-else-if="circle.thumbDown" small color="white">mdi-thumb-down</v-icon>
+                    <v-icon
+                      v-if="circle.star"
+                      small
+                      color="yellow"
+                    >
+                      mdi-star
+                    </v-icon>
+                    <v-icon
+                      v-if="circle.thumbUp"
+                      small
+                      color="white"
+                    >
+                      mdi-thumb-up
+                    </v-icon>
+                    <v-icon
+                      v-else-if="circle.thumbDown"
+                      small
+                      color="white"
+                    >
+                      mdi-thumb-down
+                    </v-icon>
                   </div>
                 </v-btn>
               </template>
@@ -52,7 +75,10 @@
             </v-menu>
           </div>
           <!-- Plus Button as a simple trigger -->
-          <v-btn icon @click="addCircle">
+          <v-btn
+            icon
+            @click="addCircle"
+          >
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </div>
@@ -61,27 +87,59 @@
       <!-- Chat messages area -->
       <v-card class="flex-grow-1 mb-4 overflow-y-auto">
         <v-card-text>
-          <div v-for="(msg, index) in messages" :key="index" class="mb-2">
-            <v-card :class="msg.role === 'user' ? 'blue lighten-4' : 'green lighten-4'" class="pa-3">
+          <div
+            v-for="(msg, index) in messages"
+            :key="index"
+            class="mb-2"
+          >
+            <v-card
+              :class="msg.role === 'user' ? 'blue lighten-4' : 'green lighten-4'"
+              class="pa-3"
+            >
               <v-card-subtitle style="font-size: 14px; color: grey;">
                 {{ msg.role === 'user' ? 'User' : 'Assistant' }}
               </v-card-subtitle>
               <v-card-text>{{ msg.content }}</v-card-text>
               <v-card-actions v-if="msg.role==='user'">
-                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
-                  <v-icon style="font-size: 16px;">mdi-thumb-up</v-icon>
+                <v-btn
+                  icon
+                  style="min-width: 24px; width: 24px; height: 24px;"
+                >
+                  <v-icon style="font-size: 16px;">
+                    mdi-thumb-up
+                  </v-icon>
                 </v-btn>
-                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
-                  <v-icon style="font-size: 16px;">mdi-thumb-down</v-icon>
+                <v-btn
+                  icon
+                  style="min-width: 24px; width: 24px; height: 24px;"
+                >
+                  <v-icon style="font-size: 16px;">
+                    mdi-thumb-down
+                  </v-icon>
                 </v-btn>
-                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
-                  <v-icon style="font-size: 16px;">mdi-star</v-icon>
+                <v-btn
+                  icon
+                  style="min-width: 24px; width: 24px; height: 24px;"
+                >
+                  <v-icon style="font-size: 16px;">
+                    mdi-star
+                  </v-icon>
                 </v-btn>
-                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
-                  <v-icon style="font-size: 16px;">mdi-delete</v-icon>
+                <v-btn
+                  icon
+                  style="min-width: 24px; width: 24px; height: 24px;"
+                >
+                  <v-icon style="font-size: 16px;">
+                    mdi-delete
+                  </v-icon>
                 </v-btn>
-                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
-                  <v-icon style="font-size: 16px;">mdi-pencil</v-icon>
+                <v-btn
+                  icon
+                  style="min-width: 24px; width: 24px; height: 24px;"
+                >
+                  <v-icon style="font-size: 16px;">
+                    mdi-pencil
+                  </v-icon>
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -100,7 +158,11 @@
           @keydown.enter.prevent="handleSend"
         >
           <template #append>
-            <v-btn color="primary" icon="mdi-send" @click="handleSend" />
+            <v-btn
+              color="primary"
+              icon="mdi-send"
+              @click="handleSend"
+            />
           </template>
         </v-textarea>
       </v-card>
@@ -114,7 +176,9 @@
     >
       <v-list>
         <v-list-item>
-          <v-list-item-title class="text-h6">Options</v-list-item-title>
+          <v-list-item-title class="text-h6">
+            Options
+          </v-list-item-title>
         </v-list-item>
         <v-list-item>
           <v-list-item-title>Option 1</v-list-item-title>

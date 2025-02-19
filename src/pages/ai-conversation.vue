@@ -1,15 +1,15 @@
 <template>
-  <v-container 
-    class="d-flex flex-column"
-    style="height: calc(100vh - 150px)"
-  >
+  <v-container class="d-flex flex-column" style="height: calc(100vh - 150px)">
     <!-- Icon Card -->
     <v-card class="mb-4 pa-4">
       <div class="d-flex align-center">
         <div v-for="(circle, index) in circles" :key="index" class="me-3">
-          <v-icon :color="circle" size="48">
-            mdi-circle
-          </v-icon>
+          <v-btn 
+            :color="circle" 
+            depressed 
+            rounded 
+            style="width: 48px; height: 48px; border-radius: 50%; min-width: 48px;"
+          />
         </div>
         <v-btn icon @click="addCircle">
           <v-icon>mdi-plus</v-icon>
@@ -35,11 +35,7 @@
         @keydown.enter.prevent="handleSend"
       >
         <template #append>
-          <v-btn
-            color="primary"
-            icon="mdi-send"
-            @click="handleSend"
-          />
+          <v-btn color="primary" icon="mdi-send" @click="handleSend" />
         </template>
       </v-textarea>
     </v-card>
@@ -52,21 +48,25 @@ import { ref } from 'vue'
 // Existing chat input logic
 const userInput = ref('')
 
-// New reactive state for circles
-const circles = ref([])
+// New reactive state for circles; default to one circle with color 'blue'
+const circles = ref(['blue'])
 // Define available colors
 const colors = ['red', 'green', 'orange', 'purple', 'blue', 'teal']
 
 const addCircle = () => {
-  // Pick a random color from the array
-  const newColor = colors[Math.floor(Math.random() * colors.length)]
-  circles.value.push(newColor)
+  let newColor;
+  const prevColor = circles.value.length ? circles.value[circles.value.length - 1] : null;
+  // Pick a random color until it differs from the previous one
+  do {
+    newColor = colors[Math.floor(Math.random() * colors.length)];
+  } while (newColor === prevColor && colors.length > 1)
+  circles.value.push(newColor);
 }
 
 const handleSend = () => {
-  if (!userInput.value.trim()) return
-  console.log('Message sent:', userInput.value)
-  userInput.value = ''
+  if (!userInput.value.trim()) return;
+  console.log('Message sent:', userInput.value);
+  userInput.value = '';
 }
 </script>
 

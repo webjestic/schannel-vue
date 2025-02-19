@@ -1,5 +1,8 @@
 <template>
-  <v-container class="d-flex flex-column" style="height: calc(100vh - 150px)">
+  <v-container 
+    class="d-flex flex-column" 
+    style="height: calc(100vh - 150px)"
+  >
     <!-- Chat messages area -->
     <v-card class="flex-grow-1 mb-4 overflow-y-auto">
       <v-card-text>

@@ -4,9 +4,9 @@
     <v-card class="mb-4 pa-4">
       <div class="d-flex align-center">
         <div v-for="(circle, index) in circles" :key="index" class="me-3">
-          <v-menu 
-            :model-value="activeCircleMenu === index" 
-            @update:modelValue="val => activeCircleMenu = val ? index : null" 
+          <v-menu
+            :model-value="activeCircleMenu === index"
+            @update:modelValue="val => activeCircleMenu = val ? index : null"
             offset-y
           >
             <template #activator="{ props }">
@@ -18,20 +18,31 @@
                 style="width: 48px; height: 48px; border-radius: 50%; min-width: 48px;"
                 @click.stop
               >
-                <!-- Show star icon if this circle is starred -->
-                <v-icon v-if="circle.starred" small color="yellow">mdi-star</v-icon>
+                <div class="d-flex align-center justify-center">
+                  <v-icon v-if="circle.star" small color="yellow">mdi-star</v-icon>
+                  <v-icon v-if="circle.thumbUp" small color="white">mdi-thumb-up</v-icon>
+                  <v-icon v-else-if="!circle.thumbUp && circle.thumbDown" small color="white">mdi-thumb-down</v-icon>
+                </div>
               </v-btn>
             </template>
             <v-list>
+              <v-list-item @click="toggleStar(index)">
+                <v-list-item-title>
+                  {{ circle.star ? 'Remove Star' : 'Star' }}
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="toggleThumbUp(index)">
+                <v-list-item-title>
+                  {{ circle.thumbUp ? 'Remove Thumbs Up' : 'Thumbs Up' }}
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="toggleThumbDown(index)">
+                <v-list-item-title>
+                  {{ circle.thumbDown ? 'Remove Thumbs Down' : 'Thumbs Down' }}
+                </v-list-item-title>
+              </v-list-item>
               <v-list-item @click="removeCircle(index)">
                 <v-list-item-title>Remove</v-list-item-title>
-              </v-list-item>
-              <v-list-item 
-                @click="circle.starred ? unstarCircle(index) : starCircle(index)"
-              >
-                <v-list-item-title>
-                  {{ circle.starred ? 'Unstar' : 'Star' }}
-                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -74,8 +85,8 @@ import { ref } from 'vue'
 // Existing chat input logic
 const userInput = ref('')
 
-// New reactive state for circles; now each is an object with 'color' and 'starred' flag
-const circles = ref([{ color: 'blue', starred: false }])
+// Each circle is now an object with 'color', 'star', 'thumbUp', and 'thumbDown'
+const circles = ref([{ color: 'blue', star: false, thumbUp: false, thumbDown: false }])
 // Define available colors
 const colors = ['red', 'green', 'orange', 'purple', 'blue', 'teal']
 
@@ -84,12 +95,14 @@ const activeCircleMenu = ref(null)
 
 const addCircle = () => {
   let newColor;
-  const prev = circles.value.length ? circles.value[circles.value.length - 1].color : null;
+  const prev = circles.value.length
+    ? circles.value[circles.value.length - 1].color
+    : null;
   // Pick a random color until it differs from the previous one
   do {
     newColor = colors[Math.floor(Math.random() * colors.length)];
   } while (newColor === prev && colors.length > 1)
-  circles.value.push({ color: newColor, starred: false });
+  circles.value.push({ color: newColor, star: false, thumbUp: false, thumbDown: false });
 }
 
 const removeCircle = (index) => {
@@ -99,19 +112,33 @@ const removeCircle = (index) => {
   }
 }
 
-// "Star" a circle: mark it as starred and move it to the beginning
-const starCircle = (index) => {
-  const circ = circles.value[index]
-  circ.starred = true;
-  circles.value.splice(index, 1)
-  circles.value.unshift(circ)
-  activeCircleMenu.value = null
+const toggleStar = (index) => {
+  circles.value[index].star = !circles.value[index].star;
+  activeCircleMenu.value = null;
 }
 
-// "Unstar" a circle: remove the starred flag without changing its position
-const unstarCircle = (index) => {
-  circles.value[index].starred = false;
-  activeCircleMenu.value = null
+const toggleThumbUp = (index) => {
+  const circ = circles.value[index];
+  // Toggle thumb up: if already true, remove it; otherwise, assign true and remove thumbDown
+  if (circ.thumbUp) {
+    circ.thumbUp = false;
+  } else {
+    circ.thumbUp = true;
+    circ.thumbDown = false;
+  }
+  activeCircleMenu.value = null;
+}
+
+const toggleThumbDown = (index) => {
+  const circ = circles.value[index];
+  // Toggle thumb down: if already true, remove it; otherwise, assign true and remove thumbUp
+  if (circ.thumbDown) {
+    circ.thumbDown = false;
+  } else {
+    circ.thumbDown = true;
+    circ.thumbUp = false;
+  }
+  activeCircleMenu.value = null;
 }
 
 const handleSend = () => {
@@ -122,10 +149,6 @@ const handleSend = () => {
 </script>
 
 <style scoped>
-.chat-messages {
-  min-height: 200px;
-}
-
 :deep(.v-expansion-panel-title) {
   padding-right: 160px !important;
 }

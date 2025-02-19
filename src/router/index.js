@@ -1,4 +1,3 @@
-
 /**
  * router/index.ts
  *
@@ -11,7 +10,14 @@ import { routes } from 'vue-router/auto-routes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+  routes: [
+    ...routes,
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: () => import('@/pages/Profile.vue')
+    }
+  ]
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

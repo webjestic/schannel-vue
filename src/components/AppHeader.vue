@@ -14,6 +14,13 @@
 
     <v-btn
       icon
+      class="ms-2"
+      @click="goToProfile"
+    >
+      <v-icon>mdi-account</v-icon>
+    </v-btn>
+    <v-btn
+      icon
       @click="toggleTheme"
     >
       <v-icon>{{ theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
@@ -23,6 +30,7 @@
 
 <script>
 import { useTheme } from 'vuetify'
+import { useRouter } from 'vue-router'
 import logo from '../assets/logo.png'
 
 export default {
@@ -30,15 +38,27 @@ export default {
   emits: ['toggle-nav'],
   setup() {
     const theme = useTheme()
+    const router = useRouter()
 
     const toggleTheme = () => {
       theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
     }
 
+    const handleProfileClick = () => {
+      console.log('Profile icon clicked')
+      // Add your profile menu logic here
+    }
+
+    const goToProfile = () => {
+      router.push('/profile')
+    }
+
     return {
       theme,
       toggleTheme,
-      logo
+      logo,
+      handleProfileClick,
+      goToProfile
     }
   }
 }

@@ -1,5 +1,7 @@
 <template>
-  <v-container class="d-flex flex-column" style="height: calc(100vh - 150px); position: relative;">
+  <v-container 
+    class="d-flex flex-column"
+    style="height: calc(100vh - 150px); position: relative;">
     <!-- Main Content Area (with right margin to accommodate panel) -->
     <div style="margin-right: 260px;">
       <!-- Icon Card -->
@@ -59,7 +61,31 @@
       <!-- Chat messages area -->
       <v-card class="flex-grow-1 mb-4 overflow-y-auto">
         <v-card-text>
-          <!-- Conversation will go here -->
+          <div v-for="(msg, index) in messages" :key="index" class="mb-2">
+            <v-card :class="msg.role === 'user' ? 'blue lighten-4' : 'green lighten-4'" class="pa-3">
+              <v-card-subtitle style="font-size: 14px; color: grey;">
+                {{ msg.role === 'user' ? 'User' : 'Assistant' }}
+              </v-card-subtitle>
+              <v-card-text>{{ msg.content }}</v-card-text>
+              <v-card-actions v-if="msg.role==='user'">
+                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
+                  <v-icon style="font-size: 16px;">mdi-thumb-up</v-icon>
+                </v-btn>
+                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
+                  <v-icon style="font-size: 16px;">mdi-thumb-down</v-icon>
+                </v-btn>
+                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
+                  <v-icon style="font-size: 16px;">mdi-star</v-icon>
+                </v-btn>
+                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
+                  <v-icon style="font-size: 16px;">mdi-delete</v-icon>
+                </v-btn>
+                <v-btn icon style="min-width: 24px; width: 24px; height: 24px;">
+                  <v-icon style="font-size: 16px;">mdi-pencil</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </div>
         </v-card-text>
       </v-card>
       
@@ -107,9 +133,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useTheme } from 'vuetify'
+import axios from 'axios'  // added import for axios
 
 // Existing chat input logic
 const userInput = ref('')
+const messages = ref([])  // new reactive chat messages array
 
 // Each circle is now an object with 'color', 'star', 'thumbUp', and 'thumbDown'
 const circles = ref([{ color: 'blue', star: false, thumbUp: false, thumbDown: false }])
@@ -170,9 +198,30 @@ const toggleThumbDown = (index) => {
   activeCircleMenu.value = null;
 }
 
-const handleSend = () => {
+const handleSend = async () => {
   if (!userInput.value.trim()) return;
-  console.log('Message sent:', userInput.value);
+  // Push user message
+  messages.value.push({ role: 'user', content: userInput.value });
+  try {
+    const response = await axios.post(
+      'http://localhost:3000/command',
+      { command: userInput.value },
+      {
+        headers: {
+          'User-Id': 'userid-3908120f-d164-4c2d-aca6-9de088426fdb',
+          'Conversation-Id': 'convid-8caac700-bff2-4e21-8c3e-6adf12ed3824',
+          'Admin-Key': 'SfBSKaLGO-LxGdUSe8nnSB-INfuSuouAypgPyPJqD4abx9KEujZr7LMiWkgN66KQ',
+          'System-Prompt-Id': 'sc_mission_master',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    // Use optional chaining to support both property names
+    const assistantMessage = response.data.response?.message || response.data.response?.message;
+    messages.value.push({ role: 'assistant', content: assistantMessage });
+  } catch (error) {
+    console.error(error);
+  }
   userInput.value = '';
 }
 </script>

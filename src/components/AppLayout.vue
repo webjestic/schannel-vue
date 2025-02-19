@@ -1,6 +1,6 @@
 <template>
   <v-layout class="rounded rounded-md">
-    <v-app-bar title="Application bar">
+    <v-app-bar title="Secure Channel">
       <v-spacer />
       <v-btn
         icon
@@ -12,14 +12,21 @@
 
     <v-navigation-drawer>
       <v-list>
-        <v-list-item title="Navigation drawer" />
+        <v-list-item
+          to="/"
+          title="Home"
+          prepend-icon="mdi-home"
+        />
+        <v-list-item
+          to="/ai-conversation"
+          title="AI Conversation"
+          prepend-icon="mdi-robot"
+        />
       </v-list>
     </v-navigation-drawer>
 
-    <v-main 
-      title="d-flex align-center justify-center" 
-      style="min-height: 300px;">
-      Main Content
+    <v-main>
+      <router-view />
     </v-main>
 
     <AppFooter />
